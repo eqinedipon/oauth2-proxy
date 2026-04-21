@@ -59,6 +59,7 @@ func main() {
 }
 
 // loadConfiguration reads and merges configuration from file and flags.
+// Priority order (highest to lowest): CLI flags > alpha config > config file > defaults
 func loadConfiguration(configFile, alphaConfigFile string, flagSet *pflag.FlagSet, args []string) (*options.Options, error) {
 	opts, err := options.NewOptions()
 	if err != nil {
