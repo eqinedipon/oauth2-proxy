@@ -66,11 +66,18 @@ func loadConfiguration(configFile, alphaConfigFile string, flagSet *pflag.FlagSe
 		return nil, fmt.Errorf("failed to create default options: %w", err)
 	}
 
-	// Default to looking for a config file in the current directory if none is specified.
-	// This makes local development a bit more convenient without needing to pass --config every time.
+	// Look for config files in a few convenient locations so local dev doesn't
+	// require passing --config every time. Check current dir first, then ~/.config.
 	if configFile == "" {
-		if _, statErr := os.Stat("oauth2-proxy.cfg"); statErr == nil {
-			configFile = "oauth2-proxy.cfg"
+		candidates := []string{
+			"oauth2-proxy.cfg",
+			os.Getenv("HOME") + "/.config/oauth2-proxy.cfg",
+		}
+		for _, candidate := range candidates {
+			if _, statErr := os.Stat(candidate); statErr == nil {
+				configFile = candidate
+				break
+			}
 		}
 	}
 
