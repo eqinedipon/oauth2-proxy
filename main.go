@@ -98,12 +98,8 @@ func loadConfiguration(configFile, alphaConfigFile string, flagSet *pflag.FlagSe
 		if err != nil {
 			return nil, fmt.Errorf("failed to load alpha config file %q: %w", alphaConfigFile, err)
 		}
+		// Merge alpha options into the main options struct
 		alpha.MergeInto(opts)
-	}
-
-	// Override with any explicitly set command-line flags
-	if err := options.ApplyFlags(opts, flagSet); err != nil {
-		return nil, fmt.Errorf("failed to apply flags: %w", err)
 	}
 
 	return opts, nil
