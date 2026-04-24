@@ -72,8 +72,14 @@ func loadConfiguration(configFile, alphaConfigFile string, flagSet *pflag.FlagSe
 		candidates := []string{
 			"oauth2-proxy.cfg",
 			os.Getenv("HOME") + "/.config/oauth2-proxy.cfg",
+			// Also check XDG_CONFIG_HOME if set, which is more correct on Linux
+			os.Getenv("XDG_CONFIG_HOME") + "/oauth2-proxy/oauth2-proxy.cfg",
 		}
 		for _, candidate := range candidates {
+			if candidate == "/oauth2-proxy/oauth2-proxy.cfg" {
+				// XDG_CONFIG_HOME was not set, skip this candidate
+				continue
+			}
 			if _, statErr := os.Stat(candidate); statErr == nil {
 				configFile = candidate
 				break
